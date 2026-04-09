@@ -9,6 +9,10 @@ APP_PORT=3000
 DOMAIN="${DOMAIN:-offmine.ru}"          # override: DOMAIN=example.com ./deploy.sh
 RUNNER="${RUNNER:-docker}"              # override: RUNNER=pm2 ./deploy.sh
 CADDY="${CADDY:-0}"                     # override: CADDY=1 ./deploy.sh
+# Space-separated list of SSH targets, e.g. "root@1.2.3.4 root@5.6.7.8"
+# If empty, runs locally.
+SERVERS="${SERVERS:-}"
+SSH_OPTS="${SSH_OPTS:--o StrictHostKeyChecking=no}"
 # ──────────────────────────────────────────────────────────────────────────────
 
 log()  { echo "[deploy] $*"; }
@@ -16,11 +20,34 @@ die()  { echo "[deploy] ERROR: $*" >&2; exit 1; }
 
 need() { command -v "$1" &>/dev/null || die "'$1' not found — install it first"; }
 
+# ─── remote dispatch ─────────────────────────────────────────────────────────
+# If SERVERS is set, SSH into each one and re-run this script remotely.
+# The script is piped via stdin so no prior setup is needed on the target.
+if [[ -n "$SERVERS" ]]; then
+  need ssh
+  FAILED=()
+  for SERVER in $SERVERS; do
+    log "Deploying to $SERVER …"
+    if DOMAIN="$DOMAIN" RUNNER="$RUNNER" CADDY="$CADDY" \
+       ssh $SSH_OPTS "$SERVER" \
+         "DOMAIN='$DOMAIN' RUNNER='$RUNNER' CADDY='$CADDY' bash -s" \
+         < "$0"; then
+      log "$SERVER — OK"
+    else
+      log "$SERVER — FAILED"
+      FAILED+=("$SERVER")
+    fi
+  done
+  if [[ ${#FAILED[@]} -gt 0 ]]; then
+    die "Failed on: ${FAILED[*]}"
+  fi
+  exit 0
+fi
+
 # ─── 0. install bun ───────────────────────────────────────────────────────────
 if ! command -v bun &>/dev/null; then
   log "Installing bun"
   curl -fsSL https://bun.sh/install | bash
-  # make bun available in current shell session
   export BUN_INSTALL="${BUN_INSTALL:-$HOME/.bun}"
   export PATH="$BUN_INSTALL/bin:$PATH"
 fi
@@ -64,13 +91,11 @@ else
   log "Skipping Caddy (proxied via Cloudflare). App will be available on port $APP_PORT"
 fi
 
-# ─── 4. build & run ──────────────────────────────────────────────────────────
+# ─── 3. build & run ──────────────────────────────────────────────────────────
 if [[ "$RUNNER" == "docker" ]]; then
-  # ── docker path ─────────────────────────────────────────────────────────────
   need docker
 
   log "Building Docker image: $APP_NAME"
-  # Write a minimal Dockerfile if one doesn't exist
   if [[ ! -f "$APP_DIR/Dockerfile" ]]; then
     log "No Dockerfile found — generating one"
     cat > "$APP_DIR/Dockerfile" <<'DOCKERFILE'
@@ -109,7 +134,6 @@ DOCKERFILE
     "$APP_NAME"
 
 else
-  # ── pm2 path ─────────────────────────────────────────────────────────────────
   need bun
 
   if ! command -v pm2 &>/dev/null; then
@@ -132,11 +156,10 @@ else
         -- run start
 
   pm2 save
-  # enable pm2 on boot (prints the command to run as root if needed)
   pm2 startup || true
 fi
 
-# ─── 5. reload caddy ─────────────────────────────────────────────────────────
+# ─── 4. reload caddy ─────────────────────────────────────────────────────────
 if [[ "$CADDY" == "1" ]]; then
   log "Reloading Caddy"
   if systemctl is-active --quiet caddy; then
