@@ -1,26 +1,32 @@
-@import "tailwindcss";
+@import 'tailwindcss';
+@import 'boxicons/css/boxicons.min.css';
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@font-face {
+  font-family: 'Minecraft';
+  src: url('/minecraft.ttf') format('truetype');
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-bg: #0d0d11;
+  --color-surface: #0d0d11;
+  --color-surface2: #24242c;
+  --color-border: #38383e;
+  --color-muted: #9b9a9a;
+  --color-fg: #ededed;
+  --color-green: #6bcf7f;
+  --color-red: #e05c5c;
+  --font-minecraft: 'Minecraft', monospace;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
+html,
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-minecraft);
+  margin: 0;
+  min-height: 100%;
+}
+
+a {
+  text-decoration: none;
 }

@@ -1,0 +1,232 @@
+@font-face {
+    font-family: 'Minecraft';
+    src: url('minecraft.ttf') format('truetype');
+}
+body {
+    background: #0d0d11;
+    font-family: 'Minecraft', sans-serif;
+    font-weight: normal;
+    color: white;
+    margin: 0;
+}
+a {
+    text-decoration: none;
+}
+img {
+    max-width: 100%;
+}
+.hero {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+.hero1 {
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+    font-size: 16px;
+}
+.oferta {
+    margin-top: 10vh;
+    width: 1000px;
+}
+.glavnaya {
+    transition: all 100ms ease;
+    color: #9b9a9a;
+    display: block;
+    height: 40px;
+    display: flex;
+    align-items: center;
+}
+.glavnaya:hover {
+    color: white;
+}
+.hero-info {
+    text-align: center;
+    width: 700px;
+    height: 500px;
+    max-width: 100%;
+}
+.hero-info h1 {
+    font-size: 32px;
+    margin-top: 35px;
+    margin-bottom: 35px;
+}
+.minigame {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.minigameip {
+    background: none;
+    border: 5px solid #38383e;
+    border-radius: 20px;
+    color: lightgray;
+    font-size: 32px;
+    width: 600px;
+    min-height: 80px;
+    max-width: 100%;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 500ms ease;
+    font-family: 'Minecraft', sans-serif;
+}
+.minigameip:hover {
+    background: #1e1e25;
+}
+.btncoin {
+    background: none;
+    border: 5px solid #38383e;
+    border-radius: 20px;
+    height: 80px;
+    width: 80px;
+    cursor: pointer;
+    transition: all 500ms ease;
+}
+.btncoin:hover {
+    background: #1e1e25;
+}
+.btn {
+    margin-top: 15px;
+    background: none;
+    border: 5px solid #38383e;
+    border-radius: 20px;
+    color: gray;
+    font-size: 32px;
+    width: 700px;
+    min-height: 80px;
+    max-width: 100%;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 500ms ease;
+    font-family: 'Minecraft', sans-serif;
+}
+.btn:hover {
+    background: #1e1e25;
+    color: lightgray;
+}
+.foot {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.foot-info {
+    max-width: 100%;
+    width: 1000px;
+}
+ul {
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    padding: 0;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+.underline {
+    transition: all 100ms ease;
+    color: #9b9a9a;
+}
+.underline:hover {
+    color: white;
+    border-bottom: 2px solid lightgray;
+}
+.dialogcoin, .dialogprohod {
+    background: #24242C;
+    border: none;
+    border-radius: 20px;
+    width: 560px;
+    height: 330px;
+    color: white;
+}
+.dialogcoin::backdrop, .dialogprohod::backdrop {
+    backdrop-filter: blur(10px);
+}
+.dialogcoin h1, .dialogprohod h1 {
+    margin: 0;
+}
+.dialogprohod {
+    height: 720px;
+}
+.close-btn {
+    position: relative;
+    top: -4px;
+    float: right;
+    background: none;
+    border: none;
+    font-size: 32px;
+    color: gray;
+    cursor: pointer;
+    transition: all 500ms ease;
+    font-family: 'Minecraft', sans-serif;
+}
+.close-btn:hover {
+    color: white;
+}
+.policy {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    background: #1e1e25;
+}
+.checkbox {
+    margin: 0;
+    position: relative;
+    top: -1px;
+}
+.checkbox1 {
+    margin: 0;
+    font-size: 13px;
+}
+
+.defform {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.email-container, .nick-container, .coin-container {
+    position: relative;
+    padding-top: 10px;
+    color: #9b9a9a;
+}
+.email-input, .nick-input, .coin-input {
+    border: none;
+    background-color: #1e1e25;
+    color: white;
+    outline: none;
+    padding: 26px 16px 8px 10px;
+    font-size: 14px;
+    font-family: 'Minecraft', sans-serif;
+}
+.email, .nick, .coin {
+    position: absolute;
+    top: 20px;
+    left: 10px;
+    font-size: 10px;
+    transition: all 0.1s;
+    cursor: text;
+}
+.email-input:placeholder-shown + .email, .nick-input:placeholder-shown + .nick, .coin-input:placeholder-shown + .coin {
+    top: 27px;
+    font-size: 16px;
+}
+.email-input:focus + .email, .nick-input:focus + .nick, .coin-input:focus + .coin {
+    top: 20px;
+    font-size: 10px;
+    color: white;
+}
+.bye-btn {
+    background-color: #1e1e25;
+    margin-top: 10px;
+    color: white;
+    border: none;
+    width: 250px;
+    height: 50.8px;
+    font-size: 16px;
+    top: 27px;
+    border-radius: 15px;
+    font-family: 'Minecraft', sans-serif;
+}

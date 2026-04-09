@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OFFmine</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="hero">
+        <div class="hero-info">
+            <img src="image.png" alt="OFFmine">
+            <h1>Проект призванный подарить вам<br>контент!</h1>
+            <div class="minigame">
+                <button id="copyButton" class="minigameip" onclick="copyText()">IP: minigame.offmine.ru</button>
+                <button id="openDialog2" class="btncoin"></button>
+            </div>
+                <button id="openDialog" class="btn">Основной сервер</button>
+        </div>
+    </div>
+
+    <dialog id="dialogcoins" class="dialogcoin">
+        <h1>Coin<button id="closeDialog2" class="close-btn">x</button></h1>
+        <p>Coin - донатная валюта сервера, 
+            за которую можно приобрести
+            косметические улучшения и 
+            небольшие облегчения режимов.<br><br>
+            1 Coin = 1 Руб
+        </p>
+        <form action="">
+            <label class="policy" for="policyInput">
+                <input class="checkbox" id="policyInput" type="checkbox" required>
+                <p class="checkbox1">Я соглашаюсь с <a class="underline" href="dogovor.html">Договором оферты</a>, <a class="underline" href="payment-security.html">Оплатой и безопасностью</a></p>
+            </label>
+            <div class="defform">
+                <div class="nick-container">
+                    <input class="nick-input" type="nick" id="nickInput" placeholder="">
+                    <label class="nick" for="nickInput">Ник на сервере</label>
+                </div>
+                <div class="email-container">
+                    <input class="email-input" type="email" id="emailInput" placeholder="">
+                    <label class="email" for="emailInput">Email для чека</label>
+                </div>
+            </div>
+            <div class="defform">
+                <div class="coin-container">
+                    <input class="coin-input" type="coin" 
+                           oninput="this.value = this.value.replace(/[^0-9]/g, '');"
+                           onblur="if (this.value !== '' && this.value < 5) this.value = '5';" 
+                           id="coinInput" 
+                           placeholder="" 
+                           autocomplete="off">
+                    <label class="coin" for="coinInput">Количество валюты</label>
+                </div>
+                <button id="byeButton" class="bye-btn">Купить</button>
+            </div>
+        </form>
+    </dialog>
+
+    <dialog id="dialogprohodka" class="dialogprohod">
+        <h1>OFFmine<button id="closeDialog" class="close-btn">x</button></h1>
+        <p>Это модальное окно.</p>
+        <form action="">
+            <label class="policy" for="policyInput1">
+                <input class="checkbox" id="policyInput1" type="checkbox" required>
+                <p class="checkbox1">Я соглашаюсь с <a class="underline" href="dogovor.html">Договором оферты</a>, <a class="underline" href="payment-security.html">Оплатой и безопасностью</a></p>
+            </label>
+            <div class="defform">
+                <div class="nick-container">
+                    <input class="nick-input" type="nick" id="nickInput1" placeholder="">
+                    <label class="nick" for="nickInput1">Ник на сервере</label>
+                </div>
+                <div class="email-container">
+                    <input class="email-input" type="email" id="emailInput1" placeholder="">
+                    <label class="email" for="emailInput1">Email для чека</label>
+                </div>
+            </div>
+            <div class="defform">
+                <button id="byeButton" class="bye-btn">Купить 30Р</button>
+            </div>        
+        </form>
+    </dialog>
+    <script>
+        function copyText() {
+            const button = document.getElementById("copyButton");
+            const text = "minigame.offmine.ru"; // Текст, который нужно скопировать
+
+            navigator.clipboard.writeText(text).then(() => {
+                button.textContent = "Скопировано!";
+                setTimeout(() => {
+                    button.textContent = "IP: minigame.offmine.ru";
+                }, 1500); // Возвращаем текст через 1.5 секунды
+            }).catch(err => {
+                console.error("Ошибка копирования: ", err);
+            });
+        }
+
+        const dialogs = {
+            dialog1: document.getElementById("dialogprohodka"),
+            dialog2: document.getElementById("dialogcoins")
+        };
+
+        const openButtons = {
+            dialog1: document.getElementById("openDialog"),
+            dialog2: document.getElementById("openDialog2")
+        };
+
+        const closeButtons = {
+            dialog1: document.getElementById("closeDialog"),
+            dialog2: document.getElementById("closeDialog2")
+        };
+
+        // Функция для открытия диалога и блокировки прокрутки
+        const openDialog = (dialog) => {
+            dialogs[dialog].showModal();
+            document.body.style.overflow = 'hidden';
+        };
+
+        // Функция для закрытия диалога и разблокировки прокрутки
+        const closeDialog = (dialog) => {
+            dialogs[dialog].close();
+            if (!Object.values(dialogs).some(d => d.open)) {
+                document.body.style.overflow = 'auto';
+            }
+        };
+
+        // Добавление обработчиков событий
+        Object.keys(openButtons).forEach(dialog => {
+            openButtons[dialog].addEventListener("click", () => openDialog(dialog));
+            closeButtons[dialog].addEventListener("click", () => closeDialog(dialog));
+
+            let clickedInside = false;
+
+            function isInsideDialog(x, y) {
+                const rect = dialogs[dialog].getBoundingClientRect();
+                return x >= rect.left && x <= rect.right && 
+                    y >= rect.top && y <= rect.bottom;
+            }
+
+            dialogs[dialog].addEventListener("mousedown", (e) => {
+                clickedInside = isInsideDialog(e.clientX, e.clientY);
+            });
+
+            document.addEventListener("mouseup", (e) => {
+                if (!clickedInside && !isInsideDialog(e.clientX, e.clientY)) {
+                    closeDialog(dialog);
+                }
+            });
+        });
+
+    </script>
+    
+
+    <div class="foot">
+        <div class="foot-info">
+            <hr>
+            <div>
+                <h4>OFFmine</h4>
+                <p>Copyright © OFFmine, Kotyan31 2025. Все права защищены.<br>Сервера OFFmine не относятся к Mojang Studios<br>Самозанятый Краснов Константин Максимович (ИНН 507561689400)</p>
+                <ul>
+                    <li><a class="underline" href="dogovor.html">Договор-оферта</a></li>
+                    <li><a class="underline" href="privacy-policy.html">Политика конфиденциальности</a></li>
+                    <li><a class="underline" href="payment-security.html">Оплата и безопасность</a></li>
+                    <li><a class="underline" href="mailto:kotyan31tv@gmail.com">kotyan31tv@gmail.com</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
