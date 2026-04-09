@@ -7,7 +7,8 @@ APP_DIR="/opt/offmine"
 APP_NAME="offmine"
 APP_PORT=3000
 DOMAIN="${DOMAIN:-offmine.ru}"          # override: DOMAIN=example.com ./deploy.sh
-RUNNER="${RUNNER:-docker}"                        # override: RUNNER=docker ./deploy.sh
+RUNNER="${RUNNER:-docker}"              # override: RUNNER=pm2 ./deploy.sh
+CADDY="${CADDY:-0}"                     # override: CADDY=1 ./deploy.sh
 # ──────────────────────────────────────────────────────────────────────────────
 
 log()  { echo "[deploy] $*"; }
@@ -32,33 +33,36 @@ else
   git clone "$REPO" "$APP_DIR"
 fi
 
-# ─── 2. install caddy ────────────────────────────────────────────────────────
-if ! command -v caddy &>/dev/null; then
-  log "Installing Caddy"
-  if command -v apt-get &>/dev/null; then
-    apt-get install -y debian-keyring debian-archive-keyring apt-transport-https curl
-    curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' \
-      | gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg
-    curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' \
-      | tee /etc/apt/sources.list.d/caddy-stable.list
-    apt-get update -qq && apt-get install -y caddy
-  elif command -v dnf &>/dev/null; then
-    dnf install -y 'dnf-command(copr)'
-    dnf copr enable -y @caddy/caddy
-    dnf install -y caddy
-  else
-    die "Unsupported package manager — install Caddy manually: https://caddyserver.com/docs/install"
+# ─── 2. caddy (optional) ─────────────────────────────────────────────────────
+if [[ "$CADDY" == "1" ]]; then
+  if ! command -v caddy &>/dev/null; then
+    log "Installing Caddy"
+    if command -v apt-get &>/dev/null; then
+      apt-get install -y debian-keyring debian-archive-keyring apt-transport-https curl
+      curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' \
+        | gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg
+      curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' \
+        | tee /etc/apt/sources.list.d/caddy-stable.list
+      apt-get update -qq && apt-get install -y caddy
+    elif command -v dnf &>/dev/null; then
+      dnf install -y 'dnf-command(copr)'
+      dnf copr enable -y @caddy/caddy
+      dnf install -y caddy
+    else
+      die "Unsupported package manager — install Caddy manually: https://caddyserver.com/docs/install"
+    fi
   fi
-fi
 
-# ─── 3. write Caddyfile ──────────────────────────────────────────────────────
-log "Writing /etc/caddy/Caddyfile (domain: $DOMAIN → localhost:$APP_PORT)"
-mkdir -p /etc/caddy
-cat > /etc/caddy/Caddyfile <<EOF
+  log "Writing /etc/caddy/Caddyfile (domain: $DOMAIN → localhost:$APP_PORT)"
+  mkdir -p /etc/caddy
+  cat > /etc/caddy/Caddyfile <<EOF
 $DOMAIN {
     reverse_proxy localhost:$APP_PORT
 }
 EOF
+else
+  log "Skipping Caddy (proxied via Cloudflare). App will be available on port $APP_PORT"
+fi
 
 # ─── 4. build & run ──────────────────────────────────────────────────────────
 if [[ "$RUNNER" == "docker" ]]; then
@@ -133,11 +137,14 @@ else
 fi
 
 # ─── 5. reload caddy ─────────────────────────────────────────────────────────
-log "Reloading Caddy"
-if systemctl is-active --quiet caddy; then
-  systemctl reload caddy
+if [[ "$CADDY" == "1" ]]; then
+  log "Reloading Caddy"
+  if systemctl is-active --quiet caddy; then
+    systemctl reload caddy
+  else
+    systemctl enable --now caddy
+  fi
+  log "Done. App proxied via Caddy at https://$DOMAIN"
 else
-  systemctl enable --now caddy
+  log "Done. App running on port $APP_PORT"
 fi
-
-log "Done. App running on port $APP_PORT, proxied via Caddy at https://$DOMAIN"

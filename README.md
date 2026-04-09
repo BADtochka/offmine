@@ -10,8 +10,9 @@ curl -fsSL https://raw.githubusercontent.com/BADtochka/offmine/main/deploy.sh | 
 |---|---|---|
 | `DOMAIN` | `offmine.ru` | Домен для Caddy |
 | `RUNNER` | `docker` | Способ запуска: `docker` или `pm2` |
+| `CADDY` | `0` | Установить и настроить Caddy (`1` — включить) |
 
 ```bash
-# Пример с кастомными параметрами
-curl -fsSL https://raw.githubusercontent.com/BADtochka/offmine/main/deploy.sh | sudo DOMAIN=example.com RUNNER=pm2 bash
+# С Caddy (если не используется Cloudflare)
+curl -fsSL https://raw.githubusercontent.com/BADtochka/offmine/main/deploy.sh | sudo CADDY=1 bash
 ```
