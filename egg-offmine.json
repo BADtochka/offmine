@@ -1,0 +1,62 @@
+{
+  "_comment": "DO NOT EDIT: FILE AUTO GENERATED — offmine Next.js egg",
+  "meta": {
+    "version": "PTDL_v2",
+    "update_url": null
+  },
+  "exported_at": "2026-04-10T00:00:00+00:00",
+  "name": "offmine",
+  "author": "admin@offmine.ru",
+  "description": "offmine — Next.js 16 app powered by Bun",
+  "features": null,
+  "docker_images": {
+    "Bun 1": "oven/bun:1"
+  },
+  "file_denylist": [],
+  "startup": "cd /home/container && PORT={{SERVER_PORT}} bun run start",
+  "config": {
+    "files": "{}",
+    "startup": "{\"done\": \"started server on\"}",
+    "logs": "{}",
+    "stop": "^C"
+  },
+  "scripts": {
+    "installation": {
+      "script": "#!/bin/bash\nset -e\n\napt-get update -qq && apt-get install -y --no-install-recommends git ca-certificates curl\n\n# install bun\ncurl -fsSL https://bun.sh/install | bash\nexport BUN_INSTALL=\"/root/.bun\"\nexport PATH=\"$BUN_INSTALL/bin:$PATH\"\n\n# clone or update\nif [ -d /mnt/server/.git ]; then\n  git -C /mnt/server pull --ff-only\nelse\n  git clone https://github.com/BADtochka/offmine.git /mnt/server\nfi\n\ncd /mnt/server\nbun install --frozen-lockfile\nbun run build\n\necho '[egg] install done'",
+      "container": "debian:bookworm-slim",
+      "entrypoint": "bash"
+    }
+  },
+  "variables": [
+    {
+      "name": "Server Port",
+      "description": "Port the Next.js app listens on. Must match the allocation in Pterodactyl.",
+      "env_variable": "SERVER_PORT",
+      "default_value": "3000",
+      "user_viewable": true,
+      "user_editable": false,
+      "rules": "required|numeric|between:1024,65535",
+      "field_type": "text"
+    },
+    {
+      "name": "Node ENV",
+      "description": "Node environment (production / development)",
+      "env_variable": "NODE_ENV",
+      "default_value": "production",
+      "user_viewable": true,
+      "user_editable": false,
+      "rules": "required|string|in:production,development",
+      "field_type": "text"
+    },
+    {
+      "name": "Git Branch",
+      "description": "Branch to pull during reinstall",
+      "env_variable": "GIT_BRANCH",
+      "default_value": "main",
+      "user_viewable": true,
+      "user_editable": true,
+      "rules": "required|string|max:64",
+      "field_type": "text"
+    }
+  ]
+}
