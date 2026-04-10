@@ -10,7 +10,7 @@
   "description": "offmine — Next.js 16 app powered by Bun",
   "features": [],
   "docker_images": {
-    "Bun 1": "ghcr.io/parkervcp/yolks:bun_1"
+    "Bun 1": "ghcr.io/parkervcp/yolks:bun_latest"
   },
   "file_denylist": [],
   "startup": "cd /home/container && PORT={{APP_PORT}} /root/.bun/bin/bun run start",
