@@ -9,13 +9,19 @@ interface ServerData {
   version?: string;
 }
 
+interface Mirror {
+  ip: string;
+  label: string;
+}
+
 interface Props {
   ip: string;
   label: string;
+  mirrors?: Mirror[];
   delay?: number;
 }
 
-export default function ServerCard({ ip, label, delay = 0 }: Props) {
+export default function ServerCard({ ip, label, mirrors, delay = 0 }: Props) {
   const [data, setData] = useState<ServerData | null>(null);
   const [copied, setCopied] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -50,43 +56,79 @@ export default function ServerCard({ ip, label, delay = 0 }: Props) {
       initial={{ opacity: 0, y: 24 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay, ease: "easeOut" }}
-      className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border-2 border-border bg-surface px-6 py-5"
+      className="rounded-2xl border-2 border-border bg-surface"
     >
-      {/* Left: status dot + label + IP */}
-      <div className="flex items-center gap-4">
-        <StatusDot loading={loading} online={data?.online ?? false} />
-        <div>
-          <div className="mb-1 text-lg text-fg">{label}</div>
-          <div className="text-sm text-muted">{ip}</div>
+      {/* Main row */}
+      <div className="flex flex-wrap items-center justify-between gap-4 px-6 py-5">
+        <div className="flex items-center gap-4">
+          <StatusDot loading={loading} online={data?.online ?? false} />
+          <div>
+            <div className="mb-1 text-lg text-fg">{label}</div>
+            <div className="text-sm text-muted">{ip}</div>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-3">
+          {data?.online && data.players && (
+            <div className="flex items-center gap-1.5 text-sm text-muted">
+              <i className="bx bx-group text-lg" />
+              <span>
+                {data.players.online}/{data.players.max}
+              </span>
+            </div>
+          )}
+          <CopyButton ip={ip} copied={copied} onClick={copyIP} />
         </div>
       </div>
 
-      {/* Right: players + copy button */}
-      <div className="flex items-center gap-3">
-        {data?.online && data.players && (
-          <div className="flex items-center gap-1.5 text-sm text-muted">
-            <i className="bx bx-group text-lg" />
-            <span>
-              {data.players.online}/{data.players.max}
-            </span>
-          </div>
-        )}
-
-        <motion.button
-          onClick={copyIP}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          className={`flex cursor-pointer items-center gap-1.5 rounded-xl border-2 bg-transparent px-3.5 py-2 font-minecraft text-sm transition-colors duration-200 ${
-            copied
-              ? "border-green text-green"
-              : "border-border text-muted hover:border-fg hover:text-fg"
-          }`}
-        >
-          <i className={`bx ${copied ? "bx-check" : "bx-copy"} text-base`} />
-          {copied ? "Скопировано" : "Копировать IP"}
-        </motion.button>
-      </div>
+      {/* Mirrors */}
+      {mirrors && mirrors.length > 0 && (
+        <div className="border-t-2 border-border px-6 py-3 flex flex-col gap-2">
+          {mirrors.map((mirror) => (
+            <MirrorRow key={mirror.ip} mirror={mirror} />
+          ))}
+        </div>
+      )}
     </motion.div>
+  );
+}
+
+function MirrorRow({ mirror }: { mirror: Mirror }) {
+  const [copied, setCopied] = useState(false);
+
+  const copyIP = () => {
+    navigator.clipboard.writeText(mirror.ip).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    });
+  };
+
+  return (
+    <div className="flex flex-wrap items-center justify-between gap-3">
+      <div>
+        <span className="text-sm text-fg">{mirror.label}</span>
+        <span className="ml-2 text-sm text-muted">{mirror.ip}</span>
+      </div>
+      <CopyButton ip={mirror.ip} copied={copied} onClick={copyIP} />
+    </div>
+  );
+}
+
+function CopyButton({ ip: _ip, copied, onClick }: { ip: string; copied: boolean; onClick: () => void }) {
+  return (
+    <motion.button
+      onClick={onClick}
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.95 }}
+      className={`flex cursor-pointer items-center gap-1.5 rounded-xl border-2 bg-transparent px-3.5 py-2 font-minecraft text-sm transition-colors duration-200 ${
+        copied
+          ? "border-green text-green"
+          : "border-border text-muted hover:border-fg hover:text-fg"
+      }`}
+    >
+      <i className={`bx ${copied ? "bx-check" : "bx-copy"} text-base`} />
+      {copied ? "Скопировано" : "Копировать IP"}
+    </motion.button>
   );
 }
 

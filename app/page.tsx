@@ -44,7 +44,7 @@ export default function Home() {
           {/* Server cards */}
           <div className='flex flex-col gap-3.5'>
             {servers.map((s, i) => (
-              <ServerCard key={s.ip} ip={s.ip} label={s.label} delay={0.35 + i * 0.1} />
+              <ServerCard key={s.ip} ip={s.ip} label={s.label} mirrors={s.mirrors} delay={0.35 + i * 0.1} />
             ))}
           </div>
         </div>
