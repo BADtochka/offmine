@@ -22,7 +22,7 @@
   },
   "scripts": {
     "installation": {
-      "script": "#!/bin/bash\nset -e\n\napt-get update -qq && apt-get install -y --no-install-recommends git ca-certificates curl unzip\n\n# install bun\ncurl -fsSL https://bun.sh/install | bash\nexport BUN_INSTALL=\"/root/.bun\"\nexport PATH=\"$BUN_INSTALL/bin:$PATH\"\n\n# clone or update\nif [ -d /mnt/server/.git ]; then\n  git -C /mnt/server fetch origin\n  git -C /mnt/server reset --hard origin/${GIT_BRANCH}\nelse\n  git clone --branch ${GIT_BRANCH} https://github.com/BADtochka/offmine.git /mnt/server\nfi\n\ncd /mnt/server\nbun install --frozen-lockfile\nbun run build\n\n[ -d /mnt/server/.next ] || { echo '[egg] ERROR: .next dir missing after build'; exit 1; }\n\necho '[egg] install done'",
+      "script": "#!/bin/bash\nset -e\n\napt-get update -qq && apt-get install -y --no-install-recommends git ca-certificates curl unzip\n\n# install bun\ncurl -fsSL https://bun.sh/install | bash\nexport BUN_INSTALL=\"/root/.bun\"\nexport PATH=\"$BUN_INSTALL/bin:$PATH\"\n\n# clone or update\nif [ -d /mnt/server/.git ]; then\n  git -C /mnt/server fetch origin\n  git -C /mnt/server reset --hard origin/${GIT_BRANCH}\nelse\n  git clone --branch ${GIT_BRANCH} https://github.com/BADtochka/offmine.git /mnt/server\nfi\n\ncd /mnt/server\nbun install\nbun run build\n\n[ -d /mnt/server/.next ] || { echo '[egg] ERROR: .next dir missing after build'; exit 1; }\n\necho '[egg] install done'",
       "container": "debian:bookworm-slim",
       "entrypoint": "bash"
     }
