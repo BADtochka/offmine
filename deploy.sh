@@ -9,40 +9,12 @@ APP_PORT=3000
 DOMAIN="${DOMAIN:-offmine.ru}"          # override: DOMAIN=example.com ./deploy.sh
 RUNNER="${RUNNER:-docker}"              # override: RUNNER=pm2 ./deploy.sh
 CADDY="${CADDY:-0}"                     # override: CADDY=1 ./deploy.sh
-# Space-separated list of SSH targets, e.g. "root@1.2.3.4 root@5.6.7.8"
-# If empty, runs locally.
-SERVERS="${SERVERS:-}"
-SSH_OPTS="${SSH_OPTS:--o StrictHostKeyChecking=no}"
 # ──────────────────────────────────────────────────────────────────────────────
 
 log()  { echo "[deploy] $*"; }
 die()  { echo "[deploy] ERROR: $*" >&2; exit 1; }
 
 need() { command -v "$1" &>/dev/null || die "'$1' not found — install it first"; }
-
-# ─── remote dispatch ─────────────────────────────────────────────────────────
-# If SERVERS is set, SSH into each one and re-run this script remotely.
-# The script is piped via stdin so no prior setup is needed on the target.
-if [[ -n "$SERVERS" ]]; then
-  need ssh
-  FAILED=()
-  for SERVER in $SERVERS; do
-    log "Deploying to $SERVER …"
-    if DOMAIN="$DOMAIN" RUNNER="$RUNNER" CADDY="$CADDY" \
-       ssh $SSH_OPTS "$SERVER" \
-         "DOMAIN='$DOMAIN' RUNNER='$RUNNER' CADDY='$CADDY' bash -s" \
-         < "$0"; then
-      log "$SERVER — OK"
-    else
-      log "$SERVER — FAILED"
-      FAILED+=("$SERVER")
-    fi
-  done
-  if [[ ${#FAILED[@]} -gt 0 ]]; then
-    die "Failed on: ${FAILED[*]}"
-  fi
-  exit 0
-fi
 
 # ─── 0. install bun ───────────────────────────────────────────────────────────
 if ! command -v bun &>/dev/null; then
