@@ -22,3 +22,12 @@ curl -fsSL https://raw.githubusercontent.com/BADtochka/offmine/main/deploy.sh | 
 curl -fsSL https://raw.githubusercontent.com/BADtochka/offmine/main/deploy.sh \
   | SERVERS="root@1.2.3.4 root@5.6.7.8" bash
 ```
+
+## Pterodactyl
+
+1. **Панель → Nest → Import Egg** → загрузи [`egg-offmine.json`](./egg-offmine.json)
+2. Создай сервер, выбери этот egg, назначь allocation (порт `3000`)
+3. Нажми **Reinstall** — склонирует репо и соберёт проект
+4. **Start**
+
+Для обновления кода повторно нажми **Reinstall**.
