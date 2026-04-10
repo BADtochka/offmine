@@ -13,7 +13,7 @@
     "Bun 1": "ghcr.io/parkervcp/yolks:bun_latest"
   },
   "file_denylist": [],
-  "startup": "cd /home/container && PORT={{APP_PORT}} bun run start",
+  "startup": "cd /home/container && PORT={{APP_PORT}} bun .next/standalone/server.js",
   "config": {
     "files": "{}",
     "startup": "{\"done\": \"Ready in\"}",
