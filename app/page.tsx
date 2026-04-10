@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import Image from 'next/image';
 import Footer from './components/Footer';
 import ServerCard from './components/ServerCard';
+import servers from '../servers.json';
 
 export default function Home() {
   return (
@@ -42,7 +43,9 @@ export default function Home() {
 
           {/* Server cards */}
           <div className='flex flex-col gap-3.5'>
-            <ServerCard ip='offmine.ru' label='Основной сервер' delay={0.35} />
+            {servers.map((s, i) => (
+              <ServerCard key={s.ip} ip={s.ip} label={s.label} delay={0.35 + i * 0.1} />
+            ))}
           </div>
         </div>
       </main>
