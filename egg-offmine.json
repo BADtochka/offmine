@@ -13,7 +13,7 @@
     "Bun 1": "oven/bun:1"
   },
   "file_denylist": [],
-  "startup": "cd /home/container && bun run start -- -p {{APP_PORT}}",
+  "startup": "cd /home/container && PORT={{APP_PORT}} bun run start",
   "config": {
     "files": "{}",
     "startup": "{\"done\": \"Ready in\"}",
