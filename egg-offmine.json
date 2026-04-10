@@ -8,7 +8,7 @@
   "name": "offmine",
   "author": "admin@offmine.ru",
   "description": "offmine — Next.js 16 app powered by Bun",
-  "features": null,
+  "features": [],
   "docker_images": {
     "Bun 1": "oven/bun:1"
   },
