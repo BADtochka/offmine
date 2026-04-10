@@ -39,16 +39,6 @@
       "field_type": "text"
     },
     {
-      "name": "Node ENV",
-      "description": "Node environment (production / development)",
-      "env_variable": "NODE_ENV",
-      "default_value": "production",
-      "user_viewable": true,
-      "user_editable": false,
-      "rules": "required|string|in:production,development",
-      "field_type": "text"
-    },
-    {
       "name": "Git Branch",
       "description": "Branch to pull during reinstall",
       "env_variable": "GIT_BRANCH",
