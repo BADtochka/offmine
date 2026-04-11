@@ -39,6 +39,26 @@
             "field_type": "text"
         },
         {
+            "name": "Hostname / Bind Address",
+            "description": "Адрес, к которому будет биндиться сервер (0.0.0.0 для Docker)",
+            "env_variable": "HOSTNAME",
+            "default_value": "0.0.0.0",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|string",
+            "field_type": "text"
+        },
+        {
+            "name": "Node Environment",
+            "description": "NODE_ENV",
+            "env_variable": "NODE_ENV",
+            "default_value": "production",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|in:production,development",
+            "field_type": "text"
+        },
+        {
             "name": "Git Branch",
             "description": "Branch to pull during reinstall",
             "env_variable": "GIT_BRANCH",
