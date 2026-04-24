@@ -31,7 +31,7 @@
     {
       "name": "Server Port",
       "description": "Port the Next.js app listens on. Must match the allocation in Pterodactyl.",
-      "env_variable": "APP_PORT",
+      "env_variable": "PORT",
       "default_value": "3000",
       "user_viewable": true,
       "user_editable": false,
