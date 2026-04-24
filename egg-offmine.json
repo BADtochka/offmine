@@ -42,7 +42,7 @@
       "name": "Startup Command",
       "description": "Command to run when the container starts.",
       "env_variable": "STARTUP_COMMAND",
-      "default_value": "cd /home/container && bun run build && bun .next/standalone/server.js",
+      "default_value": "bun run prod",
       "user_viewable": true,
       "user_editable": true,
       "rules": "required|string",
