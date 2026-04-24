@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "prod": "bun run build && bun .next/standalone/server.js"
+    "prod": "bun run build && bun run start"
   },
   "dependencies": {
     "boxicons": "^2.1.4",
