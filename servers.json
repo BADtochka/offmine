@@ -1,7 +1,7 @@
 [
-    {
-        "ip": "offmine.ru",
-        "label": "Основной сервер",
-        "mirrors": [{ "ip": "eu.offmine.ru", "label": "EU" }]
-    }
+  {
+    "ip": "offmine.fun",
+    "label": "Основной сервер",
+    "mirrors": [{ "ip": "eu.offmine.fun", "label": "EU" }]
+  }
 ]

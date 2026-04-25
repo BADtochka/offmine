@@ -1,45 +1,25 @@
-'use client';
-
-import { motion } from 'framer-motion';
-import Image from 'next/image';
+import fs from 'fs/promises';
+import path from 'path';
 import Footer from './components/Footer';
+import HeroIntro from './components/HeroIntro';
 import ServerCard from './components/ServerCard';
-import servers from '../servers.json';
+import type { Server } from './types/server';
 
-export default function Home() {
+async function getServers(): Promise<Server[]> {
+  const filePath = path.join(process.cwd(), 'servers.json');
+  const fileContents = await fs.readFile(filePath, 'utf8');
+  return JSON.parse(fileContents) as Server[];
+}
+
+export default async function Home() {
+  const servers = await getServers();
+
   return (
     <div className='flex flex-col bg-bg'>
       {/* Hero */}
       <main className='flex flex-1 items-center justify-center min-h-screen px-5 py-10'>
         <div className='w-full max-w-[700px]'>
-          {/* Logo */}
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: 'easeOut' }}
-            className='mb-7 text-center'
-          >
-            <Image
-              src='/logo.png'
-              alt='OFFmine'
-              width={420}
-              height={220}
-              style={{ width: 'auto', height: 'auto' }}
-              className='mx-auto'
-              priority
-            />
-          </motion.div>
-
-          {/* Headline */}
-          <motion.h1
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.15, ease: 'easeOut' }}
-            className='mb-9 text-center leading-8 text-fg'
-            style={{ fontSize: 'clamp(20px, 4vw, 30px)' }}
-          >
-            Проект призванный подарить вам контент!
-          </motion.h1>
+          <HeroIntro />
 
           {/* Server cards */}
           <div className='flex flex-col gap-3.5'>
