@@ -1,4 +1,5 @@
 import fs from 'fs/promises';
+import { connection } from 'next/server';
 import path from 'path';
 import Footer from './components/Footer';
 import HeroIntro from './components/HeroIntro';
@@ -6,6 +7,8 @@ import ServerCard from './components/ServerCard';
 import type { Server } from './types/server';
 
 async function getServers(): Promise<Server[]> {
+  await connection();
+
   const filePath = path.join(process.cwd(), 'servers.json');
   const fileContents = await fs.readFile(filePath, 'utf8');
   return JSON.parse(fileContents) as Server[];
